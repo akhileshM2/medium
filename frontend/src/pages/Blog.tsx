@@ -4,14 +4,14 @@ import { FullBlog } from "./FullBlog"
 import { BlogSkeleton } from "../components/BlogSkeleton"
 import { Appbar } from "../components/Appbar"
 import { Spinner } from "../components/Spinner"
+import { useRecoilState, useRecoilValueLoadable } from "recoil"
+import { blogAtomFamily } from "../atoms"
 
 export const Blog = () => {
-    const { id }  = useParams()
-    const { loading, blog } = useBlog({
-        id: id || ""
-    })
+    const { id } = useParams()
+    const blog = useRecoilValueLoadable(blogAtomFamily(id))
 
-    if (loading || !blog) {
+    if (blog.state === "loading") {
         return (
             <div>
                 <Appbar />
@@ -25,7 +25,7 @@ export const Blog = () => {
     }
     return (
         <div className="">
-            <FullBlog blog={blog}/>
+            <FullBlog blog={blog.contents}/>
         </div>
     )
 }

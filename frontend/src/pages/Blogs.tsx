@@ -1,12 +1,14 @@
+import { useRecoilValueLoadable } from "recoil"
 import { Appbar } from "../components/Appbar"
 import { BlogCard } from "../components/BlogCard"
 import { BlogSkeleton } from "../components/BlogSkeleton"
-import { useBlogs } from "../hooks"
+import { Blog, useBlogs } from "../hooks"
+import { blogBulkAtomFamily } from "../atoms"
 
  export const Blogs = () => {
-    const { loading, blogs } = useBlogs()
+    const blogs = useRecoilValueLoadable(blogBulkAtomFamily(""))
 
-    if (loading) {
+    if (blogs.state === "loading") {
         return (
             <div>
                 <Appbar />
@@ -30,7 +32,7 @@ import { useBlogs } from "../hooks"
             <Appbar />
             <div className="flex justify-center">
                 <div>
-                    {blogs.map(blog => <BlogCard id={blog.id} authorName={blog.author.name || "Akhilesh M"}
+                    {blogs.contents.map((blog: Blog) => <BlogCard id={blog.id} authorName={blog.author.name || "Akhilesh M"}
                         title={blog.title} 
                         content={blog.content}
                         publishedDate="2nd Feb 2024" />)}
